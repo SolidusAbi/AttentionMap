@@ -1,0 +1,3 @@
+[submodule "modules/Sparse"]
+	path = modules/Sparse
+	url = https://github.com/SolidusAbi/Sparse.git
