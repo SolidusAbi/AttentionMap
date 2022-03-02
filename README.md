@@ -10,3 +10,6 @@
 
 1. Luna: Linear Unified Nested Attention. (***Echarle un ojo***)
     * [Paper](https://arxiv.org/pdf/2106.01540.pdf)
+
+1. Attention-Gated Networks for Improving Ultrasound Scan Plane Detection
+    * [Paper](https://openreview.net/pdf?id=BJtn7-3sM)
