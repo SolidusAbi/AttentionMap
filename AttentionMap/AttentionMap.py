@@ -87,9 +87,44 @@ class LinearAttentionMap(nn.Module):
         return c.view(N,1,W,H), g
 
 
-class GridAttentionBlock(nn.Module):
-    def __init__(self, in_features_l, in_features_g, attn_features):
-        super(GridAttentionBlock, self).__init__()
+# class GridAttentionBlock(nn.Module):
+#     def __init__(self, in_features_l, in_features_g, attn_features):
+#         super(GridAttentionBlock, self).__init__()
 
-        self.W_l = nn.Conv2d(in_features_l, attn_features, kernel_size=1, padding=0, bias=False)
-        self.W_g = nn.Conv2d(in_features_g, attn_features, kernel_size=1, padding=0, bias=True) # Segun el paper, este lleva bias
+#         self.W_l = nn.Conv2d(in_features_l, attn_features, kernel_size=1, padding=0, bias=False)
+#         self.W_g = nn.Conv2d(in_features_g, attn_features, kernel_size=1, padding=0, bias=True) # Segun el paper, este lleva bias
+
+'''
+Grid attention block
+Reference papers
+Attention-Gated Networks https://arxiv.org/abs/1804.05338 & https://arxiv.org/abs/1808.08114
+Reference code
+https://github.com/ozan-oktay/Attention-Gated-Networks
+'''
+class GridAttentionBlock(nn.Module):
+    def __init__(self, in_features_l, in_features_g, attn_features, up_factor, normalize=False):
+        super(GridAttentionBlock, self).__init__()
+        self.up_factor = up_factor
+        self.normalize_attn = normalize
+        self.W_l = nn.Conv2d(in_channels=in_features_l, out_channels=attn_features, kernel_size=1, padding=0, bias=False)
+        self.W_g = nn.Conv2d(in_channels=in_features_g, out_channels=attn_features, kernel_size=1, padding=0, bias=False)
+        self.phi = nn.Conv2d(in_channels=attn_features, out_channels=1, kernel_size=1, padding=0, bias=True)
+    def forward(self, l, g):
+        N, C, W, H = l.size()
+        l_ = self.W_l(l)
+        g_ = self.W_g(g)
+        if self.up_factor > 1: # En el original, se aplica un 'subsampler factor'... Básicamente sería cambiar la configuración del kernel de W_l
+            g_ = F.interpolate(g_, scale_factor=self.up_factor, mode='bilinear', align_corners=False)
+        c = self.phi(F.relu(l_ + g_)) # batch_sizex1xWxH
+        # compute attn map
+        if self.normalize_attn:
+            a = F.softmax(c.view(N,1,-1), dim=2).view(N,1,W,H)
+        else:
+            a = torch.sigmoid(c)
+        # re-weight the local feature
+        f = torch.mul(a.expand_as(l), l) # batch_sizexCxWxH
+        if self.normalize_attn:
+            output = f.view(N,C,-1).sum(dim=2) # weighted sum
+        else:
+            output = F.adaptive_avg_pool2d(f, (1,1)).view(N,C)
+        return c.view(N,1,W,H), output
