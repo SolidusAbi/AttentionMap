@@ -1,3 +1,6 @@
 [submodule "modules/Sparse"]
 	path = modules/Sparse
 	url = https://github.com/SolidusAbi/Sparse.git
+[submodule "modules/MedMNIST"]
+	path = modules/MedMNIST
+	url = git@github.com:MedMNIST/MedMNIST.git
