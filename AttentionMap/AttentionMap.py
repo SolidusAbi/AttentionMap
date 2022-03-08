@@ -86,14 +86,6 @@ class LinearAttentionMap(nn.Module):
         # C 
         return c.view(N,1,W,H), g
 
-
-# class GridAttentionBlock(nn.Module):
-#     def __init__(self, in_features_l, in_features_g, attn_features):
-#         super(GridAttentionBlock, self).__init__()
-
-#         self.W_l = nn.Conv2d(in_features_l, attn_features, kernel_size=1, padding=0, bias=False)
-#         self.W_g = nn.Conv2d(in_features_g, attn_features, kernel_size=1, padding=0, bias=True) # Segun el paper, este lleva bias
-
 '''
 Grid attention block
 Reference papers
