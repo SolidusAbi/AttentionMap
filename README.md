@@ -19,4 +19,4 @@
     * [Application](https://www.researchgate.net/publication/356273113_Consecutively_Missing_Seismic_Data_Interpolation_based_on_Coordinate_Attention_Unet)
 
 # TODO
-* [] Coordinate Attention documentation
+* [ ] Coordinate Attention documentation
