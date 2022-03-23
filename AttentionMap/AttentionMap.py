@@ -1,4 +1,5 @@
 from typing import Tuple
+import torch
 from torch import Tensor, clip
 from torch import nn
 
@@ -33,7 +34,8 @@ class Conv2d(nn.Module):
         att = self.attention_map(x)
         return att*self.conv(x)
 
-import torch
+'''
+'''
 class LinearAttentionMap(nn.Module):
     '''
         Linear attention block
