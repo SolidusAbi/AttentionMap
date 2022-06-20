@@ -1,8 +1,13 @@
-from turtle import forward
+from pickle import TRUE
 import torch
 from torch import nn
 
 class CoordinateInformationEmbeding(nn.Module):
+    '''
+        Compressed Latent Space where is the coordinate information embedding, i.e. descriptors
+        for widht and height. It serves the same purpose as such as Squeeze in SE blocks 
+        (see SqueezeAndExcitation.py)
+    '''
     def __init__(self, in_channels, out_channels):
         super(CoordinateInformationEmbeding, self).__init__()
         self.pool_h = nn.AdaptiveAvgPool2d((None, 1))
@@ -19,7 +24,9 @@ class CoordinateInformationEmbeding(nn.Module):
             return
             ------
                 cd_h: torch.Tensor, shape (N, Cout, W, 1)
-                cd_w: torch.Tensor, shape (N, Cout, 1, H) 
+                    Coordinate Descriptor for height.
+                cd_w: torch.Tensor, shape (N, Cout, 1, H)
+                    Coordinate Descriptor for width. 
         '''
         _,_,w,h = x.size()
 
@@ -38,12 +45,18 @@ class CoordinateInformationEmbeding(nn.Module):
 
 class CoordinateAttentionBlock(nn.Module):
     r'''
-
+        Coordinate Attention (CA) Block which is a attention mechanism using
+        the spatial information of the input. 
+        
         Parameters
         ----------
             in_channels: int
+                Number of input channels.
             out_channels: int
+                Number of output channels.
             reduction: int
+                A reduction factor which is used as for reducing the dimensionality in the
+                coordinate descriptors.
     '''
     def __init__(self, in_channels:int, out_channels:int, reduction=32) -> None:
         super(CoordinateAttentionBlock, self).__init__()
