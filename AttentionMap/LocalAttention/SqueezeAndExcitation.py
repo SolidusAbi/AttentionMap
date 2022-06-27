@@ -1,7 +1,6 @@
-import torch
 from torch import nn 
 
-class SE(nn.Module):
+class SqueezeAndExcitationBlock(nn.Module):
     '''
         Credits:
             https://github.com/moskomule/senet.pytorch/blob/master/senet/se_module.py
