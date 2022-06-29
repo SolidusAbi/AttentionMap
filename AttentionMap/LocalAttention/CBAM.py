@@ -1,4 +1,3 @@
-from turtle import forward
 import torch
 from torch import nn
 
@@ -17,7 +16,7 @@ class ChannelAttention(nn.Module):
             )
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         avg_out = self.fc(self.avg_pool(x))
         max_out = self.fc(self.max_pool(x))
         out = avg_out + max_out
@@ -30,7 +29,7 @@ class SpatialAttention(nn.Module):
         self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         avg_out = torch.mean(x, dim=1, keepdim=True)
         max_out, _ = torch.max(x, dim=1, keepdim=True)
         x = torch.cat([avg_out, max_out], dim=1)
