@@ -10,8 +10,8 @@ class SPPFusion(nn.Module):
         self.pool2x2 = nn.AdaptiveAvgPool2d(2)
         self.pool4x4 = nn.AdaptiveAvgPool2d(4)
 
-        self.fusion = nn.Conv1d(in_planes, in_planes, kernel_size=21, groups=in_planes)
-        self.bn = nn.BatchNorm1d(in_planes)
+        self.fusion = nn.Conv1d(in_planes, in_planes, kernel_size=21, groups=in_planes, bias=False)
+        self.bn = nn.Sequential(nn.BatchNorm1d(in_planes), nn.ReLU(inplace=True))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         '''
@@ -37,9 +37,9 @@ class SPPAttentionBlock(nn.Module):
 
         self.att = nn.Sequential(
             SPPFusion(in_planes),
-            nn.Linear(in_planes, mip, bias=True),
+            nn.Linear(in_planes, mip, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(mip, in_planes, bias=True),
+            nn.Linear(mip, in_planes, bias=False),
             nn.Sigmoid(),
         )
 
