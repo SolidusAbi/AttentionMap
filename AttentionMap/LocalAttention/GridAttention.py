@@ -33,14 +33,14 @@ class GridAttentionBlock(nn.Module):
         H, W = img_size
         
         self.squeeze_h = nn.Sequential(
-            *(  nn.AdaptiveAvgPool2d((None, 1)), nn.Conv2d(in_channels, mip, 1, bias=False)) if (spatial_squeeze == SpatialSqueezeType.average_pool)
+            *(  nn.AdaptiveAvgPool2d((None, 1)), nn.Conv2d(in_channels, mip, 1, bias=False)) if (spatial_squeeze == SpatialSqueezeType.average)
                 else (nn.Conv2d(in_channels, mip, (1, W), bias=False), ),
             nn.BatchNorm2d(mip),
             nn.SiLU()
         )
 
         self.squeeze_w = nn.Sequential(
-            *(  nn.AdaptiveAvgPool2d((1, None)), nn.Conv2d(in_channels, mip, 1, bias=False),) if (spatial_squeeze == SpatialSqueezeType.average_pool)
+            *(  nn.AdaptiveAvgPool2d((1, None)), nn.Conv2d(in_channels, mip, 1, bias=False),) if (spatial_squeeze == SpatialSqueezeType.average)
                 else (nn.Conv2d(in_channels, mip, (H, 1), bias=False), ),
             nn.BatchNorm2d(mip),
             nn.SiLU()
